@@ -1,3 +1,4 @@
+import { CardFieldFormElement } from "../fields/CardField";
 import { CheckboxFieldFormElement } from "../fields/CheckboxField";
 import { DateFieldFormElement } from "../fields/DateField";
 import { NumberFieldFormElement } from "../fields/NumberField";
@@ -21,6 +22,7 @@ export type ElementsType =
   | "TextAreaField"
   | "DateField"
   | "SelectField"
+  | "CardField"
   | "CheckboxField";
 
 export type SubmitFunction = (key: string, value: string) => void;
@@ -51,21 +53,18 @@ export type FormElement = {
   validate: (formElement: FormElementInstance, currentValue: string) => boolean;
 };
 
-export type BlockFormElementInstance = {
-  id: string;
-  title: string;
-  elements?: FormElementInstance[];
-};
-
 export type FormElementInstance = {
   id: string;
+  index?: number;
   type: ElementsType;
   extraAttributes?: Record<string, any>;
+  elements?: FormElementInstance[];
 };
 
 type FormElementsType = {
   [key in ElementsType]: FormElement;
 };
+
 export const FormElements: FormElementsType = {
   TextField: TextFieldFormElement,
   TitleField: TitleFieldFormElement,
@@ -77,5 +76,6 @@ export const FormElements: FormElementsType = {
   TextAreaField: TextAreaFormElement,
   DateField: DateFieldFormElement,
   SelectField: SelectFieldFormElement,
+  CardField: CardFieldFormElement,
   CheckboxField: CheckboxFieldFormElement,
 };

@@ -1,4 +1,4 @@
-import { MSoftDelete } from "..";
+import { MSoftDelete } from '..';
 
 /**
  * Form Template Model
@@ -11,8 +11,8 @@ export class MFormTemplateBlockComponent extends MSoftDelete {
     label: string;
     type: string;
     value: string;
-    condition?: string;
-    options?: string;
+    condition?: string| boolean;
+    options?: string | Array<string>;
     isMultiple?: boolean;
     creatorId?: string | null;
     modifierId?: string | null;

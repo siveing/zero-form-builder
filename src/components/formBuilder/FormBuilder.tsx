@@ -14,8 +14,9 @@ import Link from 'next/link';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Confetti from 'react-confetti';
 import { MFormTemplate } from '@/models/form/MFormTemplate.model';
+import { RenderDataToContent } from '@/libs/utils';
 
-function FormBuilder({ form, dataMock }: { form: any; dataMock?: MFormTemplate }) {
+function FormBuilder({ form, dataMock }: { form: any; dataMock: MFormTemplate }) {
     const { setElements, setSelectedElement } = useDesigner();
     const [isReady, setIsReady] = useState(false);
 
@@ -35,10 +36,12 @@ function FormBuilder({ form, dataMock }: { form: any; dataMock?: MFormTemplate }
     const sensors = useSensors(mouseSensor, touchSensor);
 
     useEffect(() => {
-        console.log({ dataMock });
-
+        // console.log({ dataMock });
         if (isReady) return;
-        const elements = JSON.parse(form.content);
+        // const elements = JSON.parse(form.content);
+        const elements = RenderDataToContent(dataMock);
+        console.log(elements);
+        
         setElements(elements);
         setSelectedElement(null);
         const readyTimeout = setTimeout(() => setIsReady(true), 500);
