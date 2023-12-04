@@ -43,7 +43,7 @@ function FormBuilder({ form, dataMock }: { form: any; dataMock?: MFormTemplate }
         setSelectedElement(null);
         const readyTimeout = setTimeout(() => setIsReady(true), 500);
         return () => clearTimeout(readyTimeout);
-    }, [form, setElements, isReady, setSelectedElement]);
+    }, [form, setElements, isReady, setSelectedElement, dataMock]);
 
     if (!isReady) {
         return (
