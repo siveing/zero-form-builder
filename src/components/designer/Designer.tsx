@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DesignerSidebar from './DesignerSidebar';
 import { DragEndEvent, useDndMonitor, useDraggable, useDroppable } from '@dnd-kit/core';
-import { cn } from '@/libs/utils';
+import { ConvertArrayElementToRow, cn } from '@/libs/utils';
 import useDesigner from '@/hooks/useDesigner';
 import {
     ElementsType,
@@ -15,8 +15,13 @@ import { Button } from '../ui/button';
 import { BiSolidTrash } from 'react-icons/bi';
 
 function Designer() {
-    const { elements, addElement, selectedElement, setSelectedElement, removeElement } =
-        useDesigner();
+    const {
+        elements,
+        addElement,
+        selectedElement,
+        setSelectedElement,
+        removeElement
+    } = useDesigner();
 
     const droppable = useDroppable({
         id: 'designer-drop-area',
@@ -41,6 +46,8 @@ function Designer() {
                 const type = active.data?.current?.type;
                 const newElement = FormElements[type as ElementsType].construct(idGenerator());
 
+                newElement.startWithNewLine = true;
+
                 addElement(elements.length, newElement);
                 return;
             }
@@ -51,8 +58,16 @@ function Designer() {
             const isDroppingOverDesignerElementBottomHalf =
                 over.data?.current?.isBottomHalfDesignerElement;
 
+            /**
+             * Left element setting
+             */
+            const isDroppingOverDesignerElementRightHalf =
+                over.data?.current?.isRightHalfDesignerElement;
+
             const isDroppingOverDesignerElement =
-                isDroppingOverDesignerElementTopHalf || isDroppingOverDesignerElementBottomHalf;
+                isDroppingOverDesignerElementTopHalf ||
+                isDroppingOverDesignerElementBottomHalf ||
+                isDroppingOverDesignerElementRightHalf;
 
             const droppingSidebarBtnOverDesignerElement =
                 isDesignerBtnElement && isDroppingOverDesignerElement;
@@ -61,6 +76,11 @@ function Designer() {
             if (droppingSidebarBtnOverDesignerElement) {
                 const type = active.data?.current?.type;
                 const newElement = FormElements[type as ElementsType].construct(idGenerator());
+
+                /**
+                 * Default line col of element
+                 */
+                newElement.startWithNewLine = true;
 
                 const overId = over.data?.current?.elementId;
 
@@ -72,6 +92,11 @@ function Designer() {
                 let indexForNewElement = overElementIndex; // i assume i'm on top-half
                 if (isDroppingOverDesignerElementBottomHalf) {
                     indexForNewElement = overElementIndex + 1;
+                }
+
+                if (isDroppingOverDesignerElementRightHalf) {
+                    indexForNewElement = overElementIndex + 1;
+                    newElement.startWithNewLine = false;
                 }
 
                 addElement(indexForNewElement, newElement);
@@ -99,15 +124,29 @@ function Designer() {
                 const activeElement = { ...elements[activeElementIndex] };
                 removeElement(activeId);
 
+                /**
+                 * Set the row back
+                 */
+                activeElement.startWithNewLine = true;
+
                 let indexForNewElement = overElementIndex; // i assume i'm on top-half
                 if (isDroppingOverDesignerElementBottomHalf) {
                     indexForNewElement = overElementIndex + 1;
+                }
+
+                if (isDroppingOverDesignerElementRightHalf) {
+                    indexForNewElement = overElementIndex + 1;
+                    activeElement.startWithNewLine = false;
                 }
 
                 addElement(indexForNewElement, activeElement);
             }
         }
     });
+
+    const dataRowCol = ConvertArrayElementToRow(elements);
+
+    console.log(dataRowCol);
 
     return (
         <div className="flex w-full h-full">
@@ -136,10 +175,23 @@ function Designer() {
                             <div className="h-[120px] rounded-md bg-primary/20"></div>
                         </div>
                     )}
+
                     {elements.length > 0 && (
-                        <div className="flex flex-col  w-full gap-2 p-4">
-                            {elements.map((element) => (
-                                <DesignerElementWrapper key={element.id} element={element} />
+                        <div className="w-full p-4">
+                            {dataRowCol.map((element, index) => (
+                                <div
+                                    key={index}
+                                    className={`flex flex-${
+                                        element.length > 1 ? 'grow' : 'col'
+                                    } gap-2`}
+                                >
+                                    {element?.map((item: FormElementInstance) => (
+                                        <DesignerElementWrapper
+                                            key={item.id}
+                                            element={item}
+                                        />
+                                    ))}
+                                </div>
                             ))}
                         </div>
                     )}
@@ -150,6 +202,9 @@ function Designer() {
 }
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
+    /**
+     * Select the element and apply the properties
+     */
     const { removeElement, selectedElement, setSelectedElement } = useDesigner();
 
     const [mouseIsOver, setMouseIsOver] = useState<boolean>(false);
@@ -180,6 +235,15 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
         }
     });
 
+    const rightHalf = useDroppable({
+        id: element.id + '-left',
+        data: {
+            type: element.type,
+            elementId: element.id,
+            isRightHalfDesignerElement: true
+        }
+    });
+
     if (draggable.isDragging) return null; // temporary remove the element from designer
 
     const DesignerElement = FormElements[element.type].designerComponent;
@@ -188,7 +252,7 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             ref={draggable.setNodeRef}
             {...draggable.listeners}
             {...draggable.attributes}
-            className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset"
+            className="relative h-[120px] grow text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset mb-[0.5rem]"
             onMouseEnter={() => {
                 setMouseIsOver(true);
             }}
@@ -205,9 +269,12 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
                 ref={bottomHalf.setNodeRef}
                 className="absolute  w-full bottom-0 h-1/2 rounded-b-md"
             />
+
+            <div ref={rightHalf.setNodeRef} className="absolute w-1/2 h-full right-0" />
+
             {mouseIsOver && (
                 <>
-                    <div className="absolute right-0 h-full">
+                    <div className="absolute right-0 h-full z-20">
                         <Button
                             className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500"
                             variant={'outline'}
@@ -226,9 +293,11 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
                     </div>
                 </>
             )}
+
             {topHalf.isOver && (
-                <div className="absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none" />
+                <div className="absolute top-0 w-full rounded-md h-[7px] bg-orange-300 rounded-b-none" />
             )}
+
             <div
                 className={cn(
                     'flex w-full h-[120px] items-center rounded-md bg-accent/40 px-4 py-2 pointer-events-none opacity-100',
@@ -237,8 +306,13 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             >
                 <DesignerElement elementInstance={element} />
             </div>
+
+            {rightHalf.isOver && (
+                <div className="absolute top-0 right-0 w-[100px] rounded-md h-full bg-yellow-300 rounded-b-none" />
+            )}
+
             {bottomHalf.isOver && (
-                <div className="absolute bottom-0 w-full rounded-md h-[7px] bg-primary rounded-t-none" />
+                <div className="absolute bottom-0 w-full rounded-md h-[7px]  bg-orange-300 rounded-t-none" />
             )}
         </div>
     );

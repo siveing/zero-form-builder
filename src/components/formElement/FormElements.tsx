@@ -1,81 +1,82 @@
-import { CardFieldFormElement } from "../fields/CardField";
-import { CheckboxFieldFormElement } from "../fields/CheckboxField";
-import { DateFieldFormElement } from "../fields/DateField";
-import { NumberFieldFormElement } from "../fields/NumberField";
-import { ParagprahFieldFormElement } from "../fields/ParagraphField";
-import { SelectFieldFormElement } from "../fields/SelectField";
-import { SeparatorFieldFormElement } from "../fields/SeparatorField";
-import { SpacerFieldFormElement } from "../fields/SpacerField";
-import { SubTitleFieldFormElement } from "../fields/SubTitleField";
-import { TextAreaFormElement } from "../fields/TextAreaField";
-import { TextFieldFormElement } from "../fields/TextField";
-import { TitleFieldFormElement } from "../fields/TitleField";
+import { CardFieldFormElement } from '../fields/CardField';
+import { CheckboxFieldFormElement } from '../fields/CheckboxField';
+import { DateFieldFormElement } from '../fields/DateField';
+import { NumberFieldFormElement } from '../fields/NumberField';
+import { ParagprahFieldFormElement } from '../fields/ParagraphField';
+import { SelectFieldFormElement } from '../fields/SelectField';
+import { SeparatorFieldFormElement } from '../fields/SeparatorField';
+import { SpacerFieldFormElement } from '../fields/SpacerField';
+import { SubTitleFieldFormElement } from '../fields/SubTitleField';
+import { TextAreaFormElement } from '../fields/TextAreaField';
+import { TextFieldFormElement } from '../fields/TextField';
+import { TitleFieldFormElement } from '../fields/TitleField';
 
 export type ElementsType =
-  | "TextField"
-  | "TitleField"
-  | "SubTitleField"
-  | "ParagraphField"
-  | "SeparatorField"
-  | "SpacerField"
-  | "NumberField"
-  | "TextAreaField"
-  | "DateField"
-  | "SelectField"
-  | "CardField"
-  | "CheckboxField";
+    | 'TextField'
+    | 'TitleField'
+    | 'SubTitleField'
+    | 'ParagraphField'
+    | 'SeparatorField'
+    | 'SpacerField'
+    | 'NumberField'
+    | 'TextAreaField'
+    | 'DateField'
+    | 'SelectField'
+    | 'CardField'
+    | 'CheckboxField';
 
 export type SubmitFunction = (key: string, value: string) => void;
 
 export type FormElement = {
-  type: ElementsType;
+    type: ElementsType;
 
-  construct: (id: string) => FormElementInstance;
+    construct: (id: string) => FormElementInstance;
 
-  designerBtnElement: {
-    icon: React.ElementType;
-    label: string;
-  };
+    designerBtnElement: {
+        icon: React.ElementType;
+        label: string;
+    };
 
-  designerComponent: React.FC<{
-    elementInstance: FormElementInstance;
-  }>;
-  formComponent: React.FC<{
-    elementInstance: FormElementInstance;
-    submitValue?: SubmitFunction;
-    isInvalid?: boolean;
-    defaultValue?: string;
-  }>;
-  propertiesComponent: React.FC<{
-    elementInstance: FormElementInstance;
-  }>;
+    designerComponent: React.FC<{
+        elementInstance: FormElementInstance;
+    }>;
+    formComponent: React.FC<{
+        elementInstance: FormElementInstance;
+        submitValue?: SubmitFunction;
+        isInvalid?: boolean;
+        defaultValue?: string;
+    }>;
+    propertiesComponent: React.FC<{
+        elementInstance: FormElementInstance;
+    }>;
 
-  validate: (formElement: FormElementInstance, currentValue: string) => boolean;
+    validate: (formElement: FormElementInstance, currentValue: string) => boolean;
 };
 
 export type FormElementInstance = {
-  id: string;
-  index?: number;
-  type: ElementsType;
-  extraAttributes?: Record<string, any>;
-  elements?: FormElementInstance[];
+    id: string;
+    index?: number;
+    type: ElementsType;
+    extraAttributes?: Record<string, any>;
+    elements?: FormElementInstance[];
+    startWithNewLine?: boolean;
 };
 
 type FormElementsType = {
-  [key in ElementsType]: FormElement;
+    [key in ElementsType]: FormElement;
 };
 
 export const FormElements: FormElementsType = {
-  TextField: TextFieldFormElement,
-  TitleField: TitleFieldFormElement,
-  SubTitleField: SubTitleFieldFormElement,
-  ParagraphField: ParagprahFieldFormElement,
-  SeparatorField: SeparatorFieldFormElement,
-  SpacerField: SpacerFieldFormElement,
-  NumberField: NumberFieldFormElement,
-  TextAreaField: TextAreaFormElement,
-  DateField: DateFieldFormElement,
-  SelectField: SelectFieldFormElement,
-  CardField: CardFieldFormElement,
-  CheckboxField: CheckboxFieldFormElement,
+    TextField: TextFieldFormElement,
+    TitleField: TitleFieldFormElement,
+    SubTitleField: SubTitleFieldFormElement,
+    ParagraphField: ParagprahFieldFormElement,
+    SeparatorField: SeparatorFieldFormElement,
+    SpacerField: SpacerFieldFormElement,
+    NumberField: NumberFieldFormElement,
+    TextAreaField: TextAreaFormElement,
+    DateField: DateFieldFormElement,
+    SelectField: SelectFieldFormElement,
+    CardField: CardFieldFormElement,
+    CheckboxField: CheckboxFieldFormElement
 };

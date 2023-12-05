@@ -13,6 +13,12 @@ async function BuilderPage({
     const { id } = params;
     const dataMock: MFormTemplate[] = filter(FormMock, { id });
 
+
+
+        // const dataFromLocal = localStorage.getItem('zeroByJin');
+        // console.log(dataFromLocal);
+        
+
     const form = {
         content: '[]'
     };

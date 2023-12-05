@@ -1,3 +1,4 @@
+import { FormElementInstance } from '@/components/formElement/FormElements';
 import { MFormTemplate } from '@/models/form/MFormTemplate.model';
 import { MFormTemplateBlock } from '@/models/form/MFormTemplateBlock.model';
 import { MFormTemplateBlockComponent } from '@/models/form/MFormTemplateBlockComponent.model';
@@ -27,4 +28,26 @@ export function RenderDataToContent(data: MFormTemplate) {
     });
 
     return elements;
+}
+
+export function ConvertArrayElementToRow(data: FormElementInstance[]) {
+    const results = [];
+    let currentGroup: any = [];
+
+    data.forEach((item) => {
+        if (item.startWithNewLine === false) {
+            currentGroup.push(item);
+        } else {
+            if (currentGroup.length > 0) {
+                results.push(currentGroup);
+            }
+            currentGroup = [item];
+        }
+    });
+
+    if (currentGroup.length > 0) {
+        results.push(currentGroup);
+    }
+
+    return results;
 }
