@@ -13,6 +13,7 @@ import {
 import { idGenerator } from '@/libs/idGenerator';
 import { Button } from '../ui/button';
 import { BiSolidTrash } from 'react-icons/bi';
+import DesignerRightSidebar from './DesignerRightSidebar';
 
 function Designer() {
     const {
@@ -146,8 +147,6 @@ function Designer() {
 
     const dataRowCol = ConvertArrayElementToRow(elements);
 
-    console.log(dataRowCol);
-
     return (
         <div className="flex w-full h-full">
             <DesignerSidebar />
@@ -160,7 +159,7 @@ function Designer() {
                 <div
                     ref={droppable.setNodeRef}
                     className={cn(
-                        'bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto',
+                        'bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto border',
                         droppable.isOver && 'ring-4 ring-primary ring-inset'
                     )}
                 >
@@ -197,6 +196,7 @@ function Designer() {
                     )}
                 </div>
             </div>
+            <DesignerRightSidebar />
         </div>
     );
 }
@@ -308,7 +308,7 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             </div>
 
             {rightHalf.isOver && (
-                <div className="absolute top-0 right-0 w-[100px] rounded-md h-full bg-yellow-300 rounded-b-none" />
+                <div className="absolute top-0 right-0 w-[7px] rounded-md h-full bg-yellow-300 rounded-b-none" />
             )}
 
             {bottomHalf.isOver && (

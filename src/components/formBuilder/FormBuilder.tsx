@@ -15,6 +15,7 @@ import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Confetti from 'react-confetti';
 import { MFormTemplate } from '@/models/form/MFormTemplate.model';
 import { RenderDataToContent } from '@/libs/utils';
+import PreviewDialogBtn from '../base/PreviewDialogBtn';
 
 function FormBuilder({ form, dataMock }: { form: any; dataMock: MFormTemplate }) {
     const { setElements, setSelectedElement } = useDesigner();
@@ -40,8 +41,8 @@ function FormBuilder({ form, dataMock }: { form: any; dataMock: MFormTemplate })
         if (isReady) return;
         // const elements = JSON.parse(form.content);
         const elements = RenderDataToContent(dataMock);
-        console.log(elements);
-        
+        console.log({ firstRenderIfhas: elements });
+
         setElements(elements);
         setSelectedElement(null);
         const readyTimeout = setTimeout(() => setIsReady(true), 500);
@@ -122,12 +123,13 @@ function FormBuilder({ form, dataMock }: { form: any; dataMock: MFormTemplate })
                     <div className="flex items-center gap-2">
                         {!dataMock?.isPublic && (
                             <>
+                                <PreviewDialogBtn />
                                 <SaveFormBtn id={form.id} />
                             </>
                         )}
                     </div>
                 </nav>
-                <div className="flex w-full flex-grow items-center justify-center relative overflow-y-auto h-[200px] bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)]">
+                <div className="flex w-full flex-grow items-center justify-center relative overflow-y-auto h-[200px] bg-accent ">
                     <Designer />
                 </div>
             </main>
