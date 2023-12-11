@@ -20,7 +20,7 @@ const extraAttributes = {
   label: "Text field",
   helperText: "Helper text",
   required: false,
-  placeHolder: "Value here...",
+  placeHolder: "Value here..."
 };
 
 const propertiesSchema = z.object({
