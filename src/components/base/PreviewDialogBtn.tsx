@@ -13,7 +13,7 @@ function PreviewDialogBtn() {
     const dataRowCol = ConvertArrayElementToRow(elements);
 
     return (
-        <Dialog>
+        <Dialog >
             <DialogTrigger asChild>
                 <Button variant={'outline'} className="gap-2">
                     <MdPreview className="h-6 w-6" />
@@ -35,7 +35,7 @@ function PreviewDialogBtn() {
                                     key={index}
                                     className={`flex flex-${
                                         element.length > 1 ? 'grow' : 'col'
-                                    } gap-2`}
+                                    } gap-3 mb-4`}
                                 >
                                     {element?.map((item: FormElementInstance) => {
                                         const FormComponent = FormElements[item.type].formComponent;
